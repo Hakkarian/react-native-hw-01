@@ -1,86 +1,163 @@
-import { StatusBar } from 'expo-status-bar';
-import { useState } from 'react';
-import { Alert, Button, Image, ImageBackground, Keyboard, KeyboardAvoidingView, Platform, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native';
-import { TextInput } from 'react-native';
-import * as Font from 'expo-font';
-import { AppLoading } from 'expo';
+import { StatusBar } from "expo-status-bar";
+import { useState } from "react";
+import {
+  Alert,
+  Button,
+  Image,
+  ImageBackground,
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
+import { TextInput } from "react-native";
+import * as Font from "expo-font";
+import AppLoading from "expo-app-loading";
+import RegistrationScreen from "./Screens/RegistrationScreen/RegistrationScreen";
+import LoginScreen from "./Screens/LoginScreen";
+
+const loadApplication = async () => {
+  await Font.loadAsync({
+    "Roboto-Bold": require("./assets/fonts/Roboto/Roboto-Bold.ttf"),
+    "Roboto-Regular": {
+      url: require("./assets/fonts/Roboto/Roboto-Regular.ttf"),
+    },
+  });
+};
 
 export default function App() {
+  const [signUp, setSignUp] = useState(false)
+  const [isShowKeyboard, setIsShowKeyboard] = useState(false);
 
-  const [name, setName] = useState("");
-  const [password, setPassword] = useState("");
-  const nameHandler = text => setName(text);
-  const passwordHandler = text => setPassword(text);
-  const onSubmit = () => {
-    Alert.alert(`Credentials: ${name} and ${password}`);
+  console.log(isShowKeyboard)
+
+  const onSignUp = () => {
+    setSignUp(true);
   }
 
+  const onSignIn = () => {
+    setSignUp(false);
+  }
+  
+      const closeKeyboard = () => {
+        setIsShowKeyboard(false);
+        Keyboard.dismiss();
+      };
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View style={styles.container}>
-        <Text>Open up App.js to start working on your app!</Text>
-        <StatusBar style="auto" />
-        <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-        >
-          <ImageBackground source={require("./assets/adaptive-icon.png")}>
-          <Image
-            source={{ uri: "https://reactjs.org/logo-og.png" }}
-            style={{ width: 70, height: 70 }}
-          />
-          <ImageBackground source={require("./assets/adaptive-icon.png")} />
-          <TextInput
-            style={styles.input}
-            placeholder="Type smth"
-            value={name}
-            onChangeText={nameHandler}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Type smth"
-            value={password}
-            onChangeText={passwordHandler}
-          />
-          <Button
-            title={"Login"}
-            style={styles.input}
-            onPress={onSubmit}
-            ></Button>
-            </ImageBackground>
-        </KeyboardAvoidingView>
+    
+    <TouchableWithoutFeedback onPress={closeKeyboard}>
+            <View style={styles.container}>
+    <ImageBackground
+      style={styles.picture}
+      source={require("./img/mountain.jpg")}
+    >
+        {signUp ? <LoginScreen isShowKeyboard={isShowKeyboard} setIsShowKeyboard={setIsShowKeyboard} /> : <RegistrationScreen isShowKeyboard={isShowKeyboard} setIsShowKeyboard={setIsShowKeyboard} />}
+        </ImageBackground>
       </View>
-    </TouchableWithoutFeedback>
-  );
+      </TouchableWithoutFeedback>
+  );;
 }
 
-const styles = StyleSheet.create({
-  height: Platform.OS === 'ios' ? 50 : 100,
+export const styles = StyleSheet.create({
+  height: Platform.OS === "ios" ? 50 : 100,
   container: {
-    flex: 1,
+    flex: 1
+  },
+  menu: {
+    height: 500,
+    justifyContent: "center",
     ...Platform.select({
       ios: {
-        backgroundColor: '#000'
+        backgroundColor: "#fff",
       },
       android: {
-        backgroundColor: '#fff'
-      }
+        backgroundColor: "#fff",
+      },
     }),
-    alignItems: "center",
-    justifyContent: "center",
+    borderTopLeftRadius: 50,
+    borderTopRightRadius: 50
+  },
+  form: {
+    marginHorizontal: 40,
+  },
+  label: {
+    color: "#fff",
+    marginBottom: 5,
+    fontSize: 13,
   },
   title: {
-    paddingVertical: 6,
-    paddingHorizontal: 6,
-    borderWidth: 4,
-    borderColor: "#20232a",
-    borderRadius: 6,
-    backgroundColor: "#61dafb",
-    color: "#20232a",
     textAlign: "center",
     fontSize: 30,
-    fontWeight: "bold"
+    fontWeight: "bold",
+    marginBottom: 20
   },
   input: {
-    borderWidth: 1
-  }
+    height: 40,
+    marginBottom: 20,
+    color: "#000",
+
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#000",
+  },
+  picture: {
+    flex: 1,
+    resizeMode: "cover",
+    justifyContent: "flex-end",
+  },
+  wrapperImg: {
+    position: "relative"
+  },
+  img: {
+    marginLeft: "auto",
+    marginRight: "auto",
+    borderRadius: 15
+  },
+  addbutton: {
+    position: "absolute",
+    bottom: 20,
+    right: 90,
+    height: 40,
+    width: 40,
+    backgroundColor: "#fff",
+    borderWidth: 1,
+    borderColor: "yellow",
+    borderRadius: 50
+  },
+  addspan: {
+    color: "yellow"
+  },
+  button: {
+    marginTop: 10,
+    padding: 10,
+    ...Platform.select({
+      ios: {
+        backgroundColor: "transparent",
+        borderColor: "#fff",
+      },
+      android: {
+        backgroundColor: "#FF6C00",
+      },
+    }),
+    borderRadius: 5,
+    borderWidth: 1,
+
+    borderColor: Platform.OS === "ios" && "#fff",
+  },
+  btnTitle: {
+    ...Platform.select({
+      ios: {
+        color: "blue",
+      },
+      android: {
+        color: "#fff",
+      },
+    }),
+    fontSize: 20,
+    textAlign: "center",
+  },
 });
