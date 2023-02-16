@@ -20,6 +20,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
+    "prop-types": "^15.8.1",
     "react-devtools": "^4.27.2"
   },
   "private": true

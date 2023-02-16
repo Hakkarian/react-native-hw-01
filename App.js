@@ -55,7 +55,7 @@ export default function App() {
       style={styles.picture}
       source={require("./img/mountain.jpg")}
     >
-        {signUp ? <LoginScreen isShowKeyboard={isShowKeyboard} setIsShowKeyboard={setIsShowKeyboard} /> : <RegistrationScreen isShowKeyboard={isShowKeyboard} setIsShowKeyboard={setIsShowKeyboard} />}
+        {!signUp ? <LoginScreen isShowKeyboard={isShowKeyboard} setIsShowKeyboard={setIsShowKeyboard} /> : <RegistrationScreen isShowKeyboard={isShowKeyboard} setIsShowKeyboard={setIsShowKeyboard} />}
         </ImageBackground>
       </View>
       </TouchableWithoutFeedback>

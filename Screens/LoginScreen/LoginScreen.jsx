@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { styles } from "../../App";
 
 const { useState } = require("react");
@@ -107,4 +108,10 @@ const LoginScreen = ({isShowKeyboard, setIsShowKeyboard}) => {
         </View>
   );
 };
+
+LoginScreen.propTypes = {
+  isShowKeyboard: PropTypes.bool.isRequired,
+  setIsShowKeyboard: PropTypes.func.isRequired,
+};
+
 export default LoginScreen;
