@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { styles } from "../../App";
+import { styles } from "../../Screens/RegistrationScreen/RegistrationScreen";
 
 const { useState } = require("react");
 const {
@@ -16,10 +16,9 @@ const {
   Button,
 } = require("react-native");
 
-const LoginScreen = ({isShowKeyboard, setIsShowKeyboard}) => {
-  const [isReady, setIsReady] = useState(false);
+const LoginScreen = ({navigation}) => {
+  const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [initialState, setInitialState] = useState({
-    name: "",
     email: "",
     password: "",
   });
@@ -41,77 +40,95 @@ const LoginScreen = ({isShowKeyboard, setIsShowKeyboard}) => {
         email: "",
         password: "",
       });
+    navigation.navigate("ProfileScreen")
   };
-    return (
-        <View
-          style={{ ...styles.menu, height: isShowKeyboard ? 250 : 300 }}
+  return (
+    <TouchableWithoutFeedback onPress={closeKeyboard}>
+      <View style={styles.container}>
+        <ImageBackground
+          style={styles.picture}
+          source={require("../../img/mountain.jpg")}
         >
-          <KeyboardAvoidingView>
-            <View
-              style={{
-                ...styles.form,
-                marginBottom: isShowKeyboard ? 0 : 100,
-              }}
-            >
-              <View style={styles.wrapperImg}>
-                <Image
+          <View style={{ ...styles.menu, height: isShowKeyboard ? 250 : 400 }}>
+            <KeyboardAvoidingView>
+              <View
+                style={{
+                  ...styles.form,
+                  marginBottom: isShowKeyboard ? -50 : 100,
+                }}
+              >
+                <View style={styles.wrapperImg}>
+                  <Image
+                    style={{
+                      ...styles.img,
+                    }}
+                    source={require("../../img/plsholder.jpg")}
+                  />
+                  <TouchableOpacity style={styles.addbutton}>
+                    <Text style={styles.addspan}>+</Text>
+                  </TouchableOpacity>
+                </View>
+                <Text style={styles.title}>Login</Text>
+                <View>
+                  <TextInput
+                    style={styles.input}
+                    textAlign={"center"}
+                    placeholder="Enter your email"
+                    onFocus={() => setIsShowKeyboard(true)}
+                    value={initialState.email}
+                    onChangeText={(text) =>
+                      setInitialState((prevState) => ({
+                        ...prevState,
+                        email: text,
+                      }))
+                    }
+                  />
+                </View>
+                <View>
+                  <TextInput
+                    style={styles.input}
+                    textAlign={"center"}
+                    placeholder="Enter your password"
+                    secureTextEntry={true}
+                    onFocus={() => setIsShowKeyboard(true)}
+                    value={initialState.password}
+                    onChangeText={(text) =>
+                      setInitialState((prevState) => ({
+                        ...prevState,
+                        password: text,
+                      }))
+                    }
+                  />
+                </View>
+                <TouchableOpacity
+                  activeOpacity={0.7}
+                  style={styles.button}
+                  onPress={() => navigation.navigate("Home")}
+                >
+                  <Text style={styles.btnTitle}>Sign in</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
                   style={{
-                    ...styles.img,
+                    marginLeft: "auto",
+                    marginRight: "auto",
+                    marginTop: 10,
+                    marginBottom: 10,
                   }}
-                  source={require("../../img/plsholder.jpg")}
-                />
-                <TouchableOpacity style={styles.addbutton}>
-                  <Text style={styles.addspan}>+</Text>
+                  onPress={() => navigation.navigate("RegistrationScreen")}
+                >
+                  <Text style={{ color: "blue", fontSize: 18 }}>
+                    Have no account? Register!
+                  </Text>
                 </TouchableOpacity>
               </View>
-              <Text style={styles.title}>Login</Text>
-              <View>
-                <TextInput
-                  style={styles.input}
-                  textAlign={"center"}
-                  placeholder="Enter your email"
-                  onFocus={() => setIsShowKeyboard(true)}
-                  value={initialState.email}
-                  onChangeText={(text) =>
-                    setInitialState((prevState) => ({
-                      ...prevState,
-                      email: text,
-                    }))
-                  }
-                />
-              </View>
-              <View>
-                <TextInput
-                  style={styles.input}
-                  textAlign={"center"}
-                  placeholder="Enter your password"
-                  secureTextEntry={true}
-                  onFocus={() => setIsShowKeyboard(true)}
-                  value={initialState.password}
-                  onChangeText={(text) =>
-                    setInitialState((prevState) => ({
-                      ...prevState,
-                      password: text,
-                    }))
-                  }
-                />
-              </View>
-              <TouchableOpacity
-                activeOpacity={0.7}
-                style={styles.button}
-                onPress={onSubmit}
-              >
-                <Text style={styles.btnTitle}>Sign in</Text>
-              </TouchableOpacity>
-            </View>
-          </KeyboardAvoidingView>
-        </View>
+            </KeyboardAvoidingView>
+          </View>
+        </ImageBackground>
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 
-LoginScreen.propTypes = {
-  isShowKeyboard: PropTypes.bool.isRequired,
-  setIsShowKeyboard: PropTypes.func.isRequired,
-};
+
 
 export default LoginScreen;
