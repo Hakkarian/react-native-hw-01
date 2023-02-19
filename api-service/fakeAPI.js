@@ -1,5 +1,9 @@
 import { Image } from "react-native";
 
+//Google maps api key
+
+MAPS_KEY = "AIzaSyAjEyGE2HDr5ls7XTCePzSF7ZVMJqqiX-k";
+
 export const elements = [
   {
     image: "./../img/forest.jpg",

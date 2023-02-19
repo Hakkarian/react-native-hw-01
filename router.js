@@ -11,6 +11,8 @@ import ProfileScreen from "./Screens/mainScreen/ProfileScreen";
 
 import { Feather } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
+import CommentsScreen from "./Screens/mainScreen/CommentsScreen";
+import MapScreen from "./Screens/mainScreen/MapScreen/MapScreen";
 
 const AuthStack = createStackNavigator();
 const MainTab = createBottomTabNavigator();

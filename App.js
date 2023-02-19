@@ -1,5 +1,7 @@
 import { useState } from "react";
 import * as Font from "expo-font";
+import * as Location from 'expo-location';
+import * as MediaLibrary from 'expo-media-library';
 import AppLoading from "expo-app-loading";
 import { NavigationContainer } from "@react-navigation/native";
 

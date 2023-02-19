@@ -1,8 +1,11 @@
 import { AntDesign, Feather } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { StyleSheet, Text, View } from "react-native"
+import CommentsScreen from "../CommentsScreen";
 import CreatePostsScreen from "../CreatePostsScreen";
+import MapScreen from "../MapScreen/MapScreen";
 import PostsScreen from "../PostsScreen";
+import PostsNavigator from "../PostsScreen/PostsNavigator";
 import ProfileScreen from "../ProfileScreen";
 
 const MainTab = createBottomTabNavigator();
@@ -33,13 +36,14 @@ const Home = ({navigation}) => {
                 style={{ marginRight: 10 }}
                 name="log-out"
                 size={40}
-                    color={color}
-                    onPress={() => navigation.popToTop()}
+                color={color}
+                onPress={() => navigation.popToTop()}
               />
             ),
+            headerShown: false
           }}
           name="PostsScreen"
-          component={PostsScreen}
+          component={PostsNavigator}
         />
         <MainTab.Screen
           options={{
@@ -74,8 +78,8 @@ const Home = ({navigation}) => {
                 );
               }
               return <AntDesign name="user" size={size} color={"#212121"} />;
-                    },
-              headerShown: false
+            },
+            headerShown: false,
           }}
           name="ProfileScreen"
           component={ProfileScreen}
