@@ -1,4 +1,6 @@
 import PropTypes from 'prop-types';
+import { useDispatch } from "react-redux";
+import { authSignInUser } from '../../redux/auth/authOperations';
 import { styles } from "../../Screens/RegistrationScreen/RegistrationScreen";
 
 const { useState } = require("react");
@@ -22,8 +24,11 @@ const LoginScreen = ({navigation}) => {
     email: "",
     password: "",
   });
+  const [email, setEmail] = useState('')
+    const [password, setPassword] = useState("");
+  const dispatch = useDispatch()
 
-  console.log(isShowKeyboard);
+  console.log("email", email, "password", password);
 
   const closeKeyboard = () => {
     setIsShowKeyboard(false);
@@ -33,6 +38,7 @@ const LoginScreen = ({navigation}) => {
   const onSubmit = () => {
     setIsShowKeyboard(false);
     Keyboard.dismiss();
+    dispatch(authSignInUser(email, password))
     Alert.alert(
       `Your email: ${initialState.email}, your password: ${initialState.password}`
       );
@@ -40,7 +46,7 @@ const LoginScreen = ({navigation}) => {
         email: "",
         password: "",
       });
-    navigation.navigate("ProfileScreen")
+    navigation.navigate("Home")
   };
   return (
     <TouchableWithoutFeedback onPress={closeKeyboard}>
@@ -75,12 +81,8 @@ const LoginScreen = ({navigation}) => {
                     textAlign={"center"}
                     placeholder="Enter your email"
                     onFocus={() => setIsShowKeyboard(true)}
-                    value={initialState.email}
-                    onChangeText={(text) =>
-                      setInitialState((prevState) => ({
-                        ...prevState,
-                        email: text,
-                      }))
+                    value={email}
+                    onChangeText={(text) => setEmail(text)
                     }
                   />
                 </View>
@@ -91,19 +93,16 @@ const LoginScreen = ({navigation}) => {
                     placeholder="Enter your password"
                     secureTextEntry={true}
                     onFocus={() => setIsShowKeyboard(true)}
-                    value={initialState.password}
+                    value={password}
                     onChangeText={(text) =>
-                      setInitialState((prevState) => ({
-                        ...prevState,
-                        password: text,
-                      }))
+                      setPassword(text)
                     }
                   />
                 </View>
                 <TouchableOpacity
                   activeOpacity={0.7}
                   style={styles.button}
-                  onPress={() => navigation.navigate("Home")}
+                  onPress={onSubmit}
                 >
                   <Text style={styles.btnTitle}>Sign in</Text>
                 </TouchableOpacity>

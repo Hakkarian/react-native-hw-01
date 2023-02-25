@@ -1,7 +1,5 @@
-
-
-
-
+import { useDispatch } from 'react-redux';
+import { authSignUpUser } from "../../redux/auth/authOperations";
 const { useState } = require("react");
 const { TouchableWithoutFeedback, KeyboardAvoidingView, TouchableOpacity, Keyboard, Alert, View, Text, ImageBackground, Image, TextInput, Button, StyleSheet } = require("react-native");
 
@@ -11,12 +9,14 @@ const RegistrationScreen = ({navigation}) => {
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
     const [initialState, setInitialState] = useState({
           name: "",
-          email: "",
+      email: "",
       password: "",
     });
+  const dispatch = useDispatch();
 
   
   console.log(isShowKeyboard)
+  console.log(initialState)
 
     const closeKeyboard = () => {
       setIsShowKeyboard(false);
@@ -26,16 +26,19 @@ const RegistrationScreen = ({navigation}) => {
       const onSubmit = () => {
         setIsShowKeyboard(false);
         Keyboard.dismiss();
+        dispatch(authSignUpUser(initialState))
         Alert.alert(`Your name: ${initialState.name}, your email: ${initialState.email}, your password: ${initialState.password}`)
         setInitialState({
         name: "",
-        email: "",
+          email: "",
         password: "",
         });
         navigation.navigate({
           name: "PostsScreen"
         })
-      }
+  }
+  
+  
   return (
     <TouchableWithoutFeedback onPress={closeKeyboard}>
       <View style={styles.container}>
@@ -58,7 +61,7 @@ const RegistrationScreen = ({navigation}) => {
                     }}
                     source={require("../../img/plsholder.jpg")}
                   />
-                  <TouchableOpacity style={styles.addbutton}>
+                  <TouchableOpacity style={styles.addbutton} >
                     <Text style={styles.addspan}>+</Text>
                   </TouchableOpacity>
                 </View>
@@ -114,7 +117,7 @@ const RegistrationScreen = ({navigation}) => {
                   style={styles.button}
                   onPress={onSubmit}
                 >
-                  <Text style={styles.btnTitle}>Sign up</Text>
+                  <Text style={styles.btnTitle} onPress={onSubmit}>Sign up</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={{ marginLeft: "auto", marginRight: "auto", marginTop: 10, marginBottom: 10 }}
                   onPress={() => navigation.navigate("LoginScreen")}

@@ -1,15 +1,16 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as Font from "expo-font";
-import * as Location from 'expo-location';
-import * as MediaLibrary from 'expo-media-library';
-import AppLoading from "expo-app-loading";
 import { NavigationContainer } from "@react-navigation/native";
-
-import useRoute from "./router";
+import { Provider, useSelector } from "react-redux";
 import Home from "./Screens/mainScreen/Home";
 import { createStackNavigator } from "@react-navigation/stack";
 import LoginScreen from "./Screens/LoginScreen";
 import RegistrationScreen from "./Screens/RegistrationScreen/RegistrationScreen";
+import { store } from "./redux/store";
+import useRoute from "./router";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "./config";
+import Main from "./components/Main";
 
 const AuthStack = createStackNavigator();
 
@@ -25,20 +26,5 @@ const loadApplication = async () => {
 export default function App() {
   const [signUp, setSignUp] = useState(false)
 
-
-  return (
-    <NavigationContainer>
-      <AuthStack.Navigator
-        initialRouteName="LoginScreen"
-        screenOptions={{ headerShown: false }}
-      >
-         <AuthStack.Screen name="LoginScreen" component={LoginScreen} />
-        <AuthStack.Screen
-          name="RegistrationScreen"
-          component={RegistrationScreen}
-        /> 
-        <AuthStack.Screen name="Home" component={Home} />
-      </AuthStack.Navigator>
-    </NavigationContainer>
-  );;
+  return (<Provider store={store}><Main /></Provider>);
 }

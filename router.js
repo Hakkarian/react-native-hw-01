@@ -13,36 +13,31 @@ import { Feather } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import CommentsScreen from "./Screens/mainScreen/CommentsScreen";
 import MapScreen from "./Screens/mainScreen/MapScreen/MapScreen";
+import Home from "./Screens/mainScreen/Home";
 
 const AuthStack = createStackNavigator();
 const MainTab = createBottomTabNavigator();
 
 const useRoute = (isAuth) => {
-  // if (!isAuth) {
-  //   return (
-  //     <AuthStack.Navigator
-  //       initialRouteName="LoginScreen"
-  //       screenOptions={{ headerShown: false }}
-  //     >
-  //       <AuthStack.Screen name="LoginScreen" component={LoginScreen} />
-  //       <AuthStack.Screen
-  //         name="RegistrationScreen"
-  //         component={RegistrationScreen}
-  //       />
-  //       <AuthStack.Screen name="Home" component={Home} />
-  //     </AuthStack.Navigator>
-  //   );
-  // }
+  if (!isAuth) {
+    return (
+      <AuthStack.Navigator
+        initialRouteName="LoginScreen"
+        screenOptions={{ headerShown: false }}
+      >
+        <AuthStack.Screen name="LoginScreen" component={LoginScreen} />
+        <AuthStack.Screen
+          name="RegistrationScreen"
+          component={RegistrationScreen}
+        />
+      </AuthStack.Navigator>
+    );
+  }
   return (
     <AuthStack.Navigator
       initialRouteName="LoginScreen"
       screenOptions={{ headerShown: false }}
     >
-      <AuthStack.Screen name="LoginScreen" component={LoginScreen} />
-      <AuthStack.Screen
-        name="RegistrationScreen"
-        component={RegistrationScreen}
-      />
       <AuthStack.Screen name="Home" component={Home} />
     </AuthStack.Navigator>
   );

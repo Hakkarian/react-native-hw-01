@@ -1,30 +1,39 @@
 import { Feather } from "@expo/vector-icons";
-import { NavigationContainer } from "@react-navigation/native";
+import { useDispatch } from "react-redux";
 import { createStackNavigator, Header } from "@react-navigation/stack";
 import { useEffect, useState } from "react";
 import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import CommentsScreen from "../CommentsScreen";
-import MapScreen from "../MapScreen/MapScreen";
+import { authSignOutUser } from "../../../redux/auth/authOperations";
+import { collection, doc, onSnapshot } from "firebase/firestore";
+import { db } from "../../../config";
+
+export const postsRef = collection(db, "posts");
 
 const PostsScreen = ({ navigation, route }) => {
   const [posts, setPosts] = useState([]);
+  const dispatch = useDispatch();
   console.log(route.params)
+  console.log(posts)
 
   const AuthStack = createStackNavigator();
 
-  // if (!route.params.photo || !route.params.location || route.params.name) {
-  //   return;
-  // }
 
 
   useEffect(() => { 
-    console.log(route.params)
-    if (route.params) {
-      setPosts((prevState) => [...prevState, { photo: route.params.photo, location: route.params.location, name: route.params.name } ]);
-    }
-    console.log(posts)
-  }, [route.params]);
+    getAllPost();
+    
+  }, []);
   console.log("posts", posts)
+
+  const signOut = () => {
+    dispatch(authSignOutUser())
+  }
+
+  const getAllPost = async () => {
+    setPosts([]);
+    onSnapshot(postsRef, docsSnap => setPosts(docsSnap.docs.map(doc => ({ ...doc.data(), id: doc.id }))))
+
+  }
   return (
     <>
       <View style={styles.header}>
@@ -37,7 +46,7 @@ const PostsScreen = ({ navigation, route }) => {
             name="log-out"
             size={40}
             color={"#212121"}
-            onPress={() => navigation.popToTop()}
+            onPress={signOut}
           />
         </View>
       </View>
@@ -45,23 +54,23 @@ const PostsScreen = ({ navigation, route }) => {
         <FlatList
           data={posts}
           keyExtractor={(item, index) => index.toString()}
-          renderItem={({ item: { photo, name, location } }) => (
+          renderItem={({ item }) => (
             <View>
-              <Image source={{ uri: photo }} style={styles.token} />
-              <Text style={{marginLeft: 35, marginTop: 10, marginBottom: 10}}>{name}</Text>
+              <Image source={{ uri: item.photo }} style={styles.token} />
+              <Text style={{marginLeft: 35, marginTop: 10, marginBottom: 10}}>{item.comment}</Text>
               <View style={styles.feedbackContainer}>
                 <TouchableOpacity
                   style={styles.feedbackButton}
-                  onPress={() => navigation.navigate("Comments")}
+                  onPress={() => navigation.navigate("Comments", {id: item.id})}
                 >
                   <Feather name="message-circle" size={24} color="black" />
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={{marginRight: 120, flexDirection: "row"}}
-                  onPress={() => navigation.navigate("Map")}
+                  onPress={() => navigation.navigate("Map", { locationInfo: item.locationInfo.coords })}
                 >
                   <Feather name="map-pin" size={24} color="black" />
-                  <Text>{location}</Text>
+                  <Text style={{marginLeft: 10}}>{item.locationText}</Text>
                 </TouchableOpacity>
               </View>
             </View>

@@ -3,17 +3,30 @@ import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from "reac
 import { MaterialIcons } from "@expo/vector-icons"; 
 import { useEffect, useState } from 'react';
 import * as Location from 'expo-location';
+import { db, storage } from '../../../config';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import { nanoid } from '@reduxjs/toolkit';
+import { addDoc, collection, doc, getFirestore, setDoc } from 'firebase/firestore';
+import { useSelector } from 'react-redux';
 
 const CreatePostsScreen = ({navigation}) => {
     const [camera, setCamera] = useState(null);
   const [state, setState] = useState({
       name: "",
-        location: "",
-      photo: "",
-    })
-  const { name, location, photo } = state;
+    locationInfo: null,
+        locationName: "",
+    photo: "",
+    latitude: "",
+    longitude: "",
+      id: "",
+  })
+  const { userId, nickName, stateChange } = useSelector(state => state.auth)
+
+  const { name, locationInfo, locationName, photo } = state;
+
+  console.log(camera)
   
-  console.log("name", name, "location", location);
+  console.log("name", name, "location", locationInfo);
 
   useEffect(() => {
     (async () => {
@@ -23,29 +36,59 @@ const CreatePostsScreen = ({navigation}) => {
         alert("You do not belong in here")
         return;
       }
+      let locationRes = await Location.getCurrentPositionAsync({});
+      setState({locationInfo: locationRes})
     })();
-  });
+  }, []);
 
     const TakePhoto = async () => {
       const snap = await camera.takePictureAsync();
+
       const location = await Location.getCurrentPositionAsync();
-      console.log(location);
+
       setState({
         photo: snap.uri,
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
+        locationInfo: location
       });
     };
 
-    const sendPhoto = () => {
+  const sendPhoto = () => {
+    uploadPostToServer();
       navigation.navigate("Posts", {
-        photo, name, location
+        photo
       });
-      setState({photo: "", name: "", location: ""})
+
   };
+
+  const uploadPostToServer = async () => {
+    const createPost = await addDoc(collection(db, "posts"),
+      {
+        photo: photo || null, name: nickName || null,
+        locationInfo: locationInfo || null,
+        locationText: locationName || null,
+        id: userId || null, comment: name || null
+      });
+    console.log("doc with ID", createPost.id);
+    setState({id: createPost.id})
+  }
 
   const handleInputChange = (e) => {
     setName(e.target.value)
+  }
+
+  const uploadPhotoToServer = async () => {
+    const response = await fetch(photo);
+    const file = await response.blob();
+
+    const uniquePostId = nanoid()
+
+    const storageRef = ref(storage, `photos/${uniquePostId}`);
+    
+    const processedPhoto = uploadBytes(storageRef, file).then((snapshot) => {
+      getDownloadURL(snapshot.ref).then(url => console.log(url))
+    })
+    
+    return processedPhoto
   }
   
     return (
@@ -78,7 +121,7 @@ const CreatePostsScreen = ({navigation}) => {
             placeholder="Location..."
             defaultValue={location}
             onChangeText={(text) =>
-              setState((prevState) => ({ ...prevState, location: text }))
+              setState((prevState) => ({ ...prevState, locationName: text }))
             }
           />
           <TouchableOpacity style={styles.button} onPress={sendPhoto}>
