@@ -35,7 +35,7 @@ const useRoute = (isAuth) => {
   }
   return (
     <AuthStack.Navigator
-      initialRouteName="LoginScreen"
+      initialRouteName="Home"
       screenOptions={{ headerShown: false }}
     >
       <AuthStack.Screen name="Home" component={Home} />

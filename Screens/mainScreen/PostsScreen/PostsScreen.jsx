@@ -67,7 +67,7 @@ const PostsScreen = ({ navigation, route }) => {
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={{marginRight: 120, flexDirection: "row"}}
-                  onPress={() => navigation.navigate("Map", { locationInfo: item.locationInfo.coords })}
+                  onPress={() => navigation.navigate("Map", { locationInfo: item.locationInfo })}
                 >
                   <Feather name="map-pin" size={24} color="black" />
                   <Text style={{marginLeft: 10}}>{item.locationText}</Text>

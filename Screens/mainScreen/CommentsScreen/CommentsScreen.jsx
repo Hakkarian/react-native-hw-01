@@ -23,10 +23,10 @@ const CommentsScreen = ({ route }) => {
 
     
   const sendComment = () => {
+    setComment("");
         const docRef = doc(db, "posts", id);
         const commentsRef = collection(docRef, "comments");
     addDoc(commentsRef, { comment: comment, nickName: nickName })
-    setComment("");
     }
 
   const getAllPost = () => {

@@ -11,10 +11,14 @@ import { postsRef } from "../PostsScreen/PostsScreen";
 
 
 const ProfileScreen = ({ navigation }) => {
-  const {userId} = useSelector(state => state.auth)
+  const {userId, nickName} = useSelector(state => state.auth)
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [profilePosts, setProfilePosts] = useState([]);
   const dispatch = useDispatch();
+
+
+  console.log(profilePosts)
+  
   
 
     const closeKeyboard = () => {
@@ -47,12 +51,13 @@ const ProfileScreen = ({ navigation }) => {
                   marginBottom: isShowKeyboard ? -50 : 100,
                 }}
               >
-                <View style={styles.wrapperImg}>
+                {profilePosts.length !== 0 && <><View style={styles.wrapperImg}>
                   <Image
                     style={{
                       ...styles.img,
                     }}
                     source={require("../../../img/plsholder.jpg")}
+
                   />
                   <TouchableOpacity style={styles.addbutton}>
                     <Text style={styles.addspan}>+</Text>
@@ -64,6 +69,7 @@ const ProfileScreen = ({ navigation }) => {
                     <Feather name="log-out" size={30} color={"#bdbdbd"} />
                   </TouchableOpacity>
                 </View>
+                <Text style={styles.nameStyle}>{nickName}</Text></>}
                 <View style={styles.postsWrapper}>
                   <FlatList
                     data={profilePosts}
@@ -100,7 +106,7 @@ const ProfileScreen = ({ navigation }) => {
                             style={{ marginRight: 80, flexDirection: "row" }}
                             onPress={() =>
                               navigation.navigate("Map", {
-                                locationInfo: item.locationInfo.coords,
+                                locationInfo: item.locationInfo,
                               })
                             }
                           >
@@ -175,7 +181,7 @@ const styles = StyleSheet.create({
   },
   postsWrapper: {
 
-    marginTop: 70,
+    marginTop: 10,
   },
   token: {
     marginBottom: "auto",
@@ -195,4 +201,11 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     marginBottom: 10,
   },
+  nameStyle: {
+    fontSize: 30,
+    alignItems: "center",
+    marginLeft: "38%",
+    marginTop: "20%",
+
+  }
 });

@@ -10,26 +10,27 @@ import { addDoc, collection, doc, getFirestore, setDoc } from 'firebase/firestor
 import { useSelector } from 'react-redux';
 
 const CreatePostsScreen = ({navigation}) => {
-    const [camera, setCamera] = useState(null);
+  const [camera, setCamera] = useState(null);
+  const [photo, setPhoto] = useState(null);
+  const [cameraPermissions, setCameraPermissions] = useState(null);
+
   const [state, setState] = useState({
       name: "",
     locationInfo: null,
         locationName: "",
-    photo: "",
     latitude: "",
     longitude: "",
       id: "",
   })
   const { userId, nickName, stateChange } = useSelector(state => state.auth)
-
-  const { name, locationInfo, locationName, photo } = state;
-
-  console.log(camera)
-  
-  console.log("name", name, "location", locationInfo);
+  const { name, locationInfo, locationName} = state;
+  console.log("cameraPermissions", cameraPermissions)
+  console.log("name", name, "location", locationInfo, "photo", photo);
 
   useEffect(() => {
     (async () => {
+      const cameraStatus = await Camera.requestCameraPermissionsAsync();
+      setCameraPermissions(cameraStatus.status === 'granted');
       const {status} = await Location.requestForegroundPermissionsAsync();
       console.log("status", status)
       if (status !== "granted") {
@@ -41,30 +42,38 @@ const CreatePostsScreen = ({navigation}) => {
     })();
   }, []);
 
-    const TakePhoto = async () => {
-      const snap = await camera.takePictureAsync();
+  const TakePhoto = async () => {
+    if (camera) {
+        const snap = await camera.takePictureAsync(null);
+        setPhoto(snap.uri);
+      }
+      // console.log("snap", snap)
 
-      const location = await Location.getCurrentPositionAsync();
+      const loc = await Location.getCurrentPositionAsync();
+
+
 
       setState({
-        photo: snap.uri,
-        locationInfo: location
+        locationInfo: loc
       });
     };
 
   const sendPhoto = () => {
     uploadPostToServer();
+    if (photo) {
       navigation.navigate("Posts", {
-        photo
+        photo,
       });
+    }
 
   };
 
   const uploadPostToServer = async () => {
+    uploadPhotoToServer();
     const createPost = await addDoc(collection(db, "posts"),
       {
         photo: photo || null, name: nickName || null,
-        locationInfo: locationInfo || null,
+        locationInfo: locationInfo,
         locationText: locationName || null,
         id: userId || null, comment: name || null
       });
@@ -85,23 +94,26 @@ const CreatePostsScreen = ({navigation}) => {
     const storageRef = ref(storage, `photos/${uniquePostId}`);
     
     const processedPhoto = uploadBytes(storageRef, file).then((snapshot) => {
-      getDownloadURL(snapshot.ref).then(url => console.log(url))
+      getDownloadURL(snapshot.ref).then(url => setState({photo: url}))
     })
     
     return processedPhoto
   }
+
+  if (cameraPermissions === false) {
+    <Text>No appropriate photo</Text>
+  }
   
     return (
       <View style={styles.container}>
-        <Camera style={{ ...styles.camera, backgroundColor: "#212121" }} ref={setCamera}>
-          {photo && (
+        <Camera style={{ ...styles.camera, backgroundColor: "#212121" }} ref={ref => setCamera(ref)}>
+
             <View style={styles.takePhotoContainer}>
               <Image
                 source={{ uri: photo }}
                 style={{ width: 100, height: 100 }}
               />
             </View>
-          )}
           <TouchableOpacity style={styles.round} onPress={TakePhoto}>
             <MaterialIcons name="camera-alt" size={24} color="black" />
           </TouchableOpacity>
